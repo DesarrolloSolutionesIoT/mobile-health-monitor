@@ -3,7 +3,7 @@ import 'dart:math';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../chart_data.dart';
+import 'chart_data.dart';
 
 class HealthDataProvider extends ChangeNotifier {
   final String url =

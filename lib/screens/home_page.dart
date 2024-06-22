@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'health_monitor.dart';
-import 'drawer.dart';
-import 'health_data.dart';
+import '../widgets/drawer.dart';
+import '../models/health_data.dart';
 
 class HealthMonitorHomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();

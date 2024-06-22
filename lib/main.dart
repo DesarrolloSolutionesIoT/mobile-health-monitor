@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'screens/login.dart';
+
 void main() {
   runApp(HealthMonitorApp());
 }
@@ -13,7 +15,7 @@ class HealthMonitorApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: HealthMonitorHomePage(),
+      home: Login(),
     );
   }
 }
