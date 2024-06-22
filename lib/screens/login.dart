@@ -61,7 +61,7 @@ class _LoginFormState extends State<Login> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/hospital_bg.jpg'), // Asegúrate de tener esta imagen en la carpeta assets/images
+                image: AssetImage('assets/images/inicio.jpeg'), // Asegúrate de tener esta imagen en la carpeta assets/images
                 fit: BoxFit.cover,
               ),
             ),
