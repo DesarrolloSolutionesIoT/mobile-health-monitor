@@ -25,9 +25,7 @@ class HealthDataProvider extends ChangeNotifier {
   List<ChartData> heartRateData = [];
   List<ChartData> oxygenLevelData = [];
 
-  final BuildContext context;
-
-  HealthDataProvider(this.context) {
+  HealthDataProvider() {
     fetchHealthData();
     _timer =
         Timer.periodic(Duration(seconds: 10), (Timer t) => fetchHealthData());
@@ -142,22 +140,6 @@ class HealthDataProvider extends ChangeNotifier {
   }
 
   void showNotification(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    // Implementar lógica para mostrar notificación
   }
 }

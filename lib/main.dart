@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'models/health_data.dart';
+import 'screens/INICIAL/login.dart';
 
-import 'screens/login.dart';
 
 void main() {
-  runApp(HealthMonitorApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => HealthDataProvider()),
+      ],
+      child: HealthMonitorApp(),
+    ),
+  );
 }
 
 class HealthMonitorApp extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/user.dart';
-import 'home.dart';
+import '../../models/user.dart';
+import '../home.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);

@@ -10,7 +10,7 @@ class HealthMonitorHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => HealthDataProvider(context),
+      create: (context) => HealthDataProvider(),
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
