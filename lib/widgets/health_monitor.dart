@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/health_card.dart';
+import 'health_card.dart';
 import '../models/health_data.dart';
 
 class HealthMonitor extends StatelessWidget {

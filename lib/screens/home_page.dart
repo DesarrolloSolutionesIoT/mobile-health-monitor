@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'health_monitor.dart';
+import '../widgets/health_monitor.dart';
 import '../widgets/drawer.dart';
 import '../models/health_data.dart';
 
