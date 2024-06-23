@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:health_guard_monitor/main.dart';
 import 'package:health_guard_monitor/widgets/health_monitor.dart';
 import '../models/patient.dart';
-import '../screens/INICIAL/patient_monitoring.dart';
-import '../screens/home_page.dart';
+
+import '../screens/monitoreo.dart';
 
 class PatientCard extends StatelessWidget {
   final Patient patient;

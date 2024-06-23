@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:health_guard_monitor/screens/INICIAL/login.dart';
 import '../../models/user.dart';
-import '../home.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -96,7 +96,7 @@ class _RegisterState extends State<Register> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => HomeScreen(currentUser: newUser),
+                      builder: (context) => Login(),
                     ),
                   );
                 }

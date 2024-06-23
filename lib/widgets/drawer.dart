@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../screens/INICIAL/perfil.dart';
 import '../screens/settings_page.dart'; // Asegúrate de tener esta importación correcta
 import '../models/health_data.dart'; // Asegúrate de tener esta importación correcta
 
@@ -66,11 +67,22 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.notifications),
-            title: Text('Notifications'),
+            leading: Icon(Icons.home),
+            title: Text('Home'),
             onTap: () {
               Navigator.pop(context);
               // Aquí puedes agregar la lógica para manejar las notificaciones
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.person),
+            title: Text('Perfil'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Profile()),
+              );
             },
           ),
           ListTile(
@@ -81,6 +93,13 @@ class AppDrawer extends StatelessWidget {
               _openSettings(context); // Define esta función para manejar la navegación a la configuración
             },
           ),
+          ListTile(
+            leading: Icon(Icons.logout),
+             title: Text('Logout'),
+               onTap: () {
+                 Navigator.pop(context);
+               },
+           )
         ],
       ),
     );

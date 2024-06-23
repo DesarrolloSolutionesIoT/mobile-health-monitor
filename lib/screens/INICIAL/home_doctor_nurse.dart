@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:health_guard_monitor/screens/perfil.dart';
-import '../models/user.dart';
-import '../models/patient.dart';
-import '../widgets/patient_card.dart';
-import 'alertas.dart';
+import 'package:health_guard_monitor/screens/INICIAL/perfil.dart';
+import '../../models/user.dart';
+import '../../models/patient.dart';
+import '../../widgets/patient_card.dart';
+import '../alertas.dart';
 
 
 class HomeDoctorNurse extends StatefulWidget {
@@ -47,7 +47,7 @@ class _HomeDoctorNurseState extends State<HomeDoctorNurse> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3, // Número de pestañas
+      length: 2, // Número de pestañas
       child: Scaffold(
         appBar: AppBar(
           title: const Text('HealthCare'),
@@ -56,7 +56,6 @@ class _HomeDoctorNurseState extends State<HomeDoctorNurse> with SingleTickerProv
             tabs: const [
               Tab(text: 'Lista de Pacientes'),
               Tab(text: 'Alertas'),
-              Tab(text: 'Perfil'),
             ],
           ),
         ),
@@ -70,7 +69,7 @@ class _HomeDoctorNurseState extends State<HomeDoctorNurse> with SingleTickerProv
               },
             ),
             const Alerts(),
-            const Profile(),
+
           ],
         ),
       ),

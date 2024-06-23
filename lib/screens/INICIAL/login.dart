@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../home_doctor_nurse.dart';
-import '../home_family.dart';
+import 'home_doctor_nurse.dart';
+import 'home_family.dart';
 import 'register.dart';
 import 'forget_password.dart';
 import '../../models/user.dart';
@@ -16,6 +16,8 @@ class _LoginFormState extends State<Login> {
   bool _obscureText = true;
   late String _email;
   late String _password;
+  bool _isLoading = false;
+
   final List<User> users = [
     User(name: 'Admin 1', email: 'admin1@example.com', password: 'admin123', type: 'admin', role: ''),
     User(name: 'Doctor 1', email: 'doctor1@example.com', password: 'doctor123', type: 'user', role: 'doctor'),
@@ -24,6 +26,10 @@ class _LoginFormState extends State<Login> {
   ];
 
   void _login() {
+    setState(() {
+      _isLoading = true;
+    });
+
     User? user = users.firstWhere(
           (user) => user.email == _email && user.password == _password,
       orElse: () => User(name: '', email: '', password: '', type: '', role: ''),
@@ -50,6 +56,10 @@ class _LoginFormState extends State<Login> {
         const SnackBar(content: Text('Usuario o contraseña incorrectos')),
       );
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -84,16 +94,14 @@ class _LoginFormState extends State<Login> {
                         "Te damos la bienvenida a HealthCare",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                          color: Colors.blue,
+                          fontSize: 22.0,
+                          color: Colors.black,
                         ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 20.0),
                       TextField(
-                        enableInteractiveSelection: false,
-                        autofocus: true,
-                        textCapitalization: TextCapitalization.characters,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           hintText: "Correo electrónico",
                           labelText: "Correo electrónico",
@@ -135,7 +143,15 @@ class _LoginFormState extends State<Login> {
                       ),
                       const SizedBox(height: 20.0),
                       TextButton(
-                        child: const Text("¿Has olvidado tu contraseña?"),
+                        child: const Text("¿Has olvidado tu contraseña?",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
+                          textAlign: TextAlign.center,
+
+                        ),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -154,15 +170,24 @@ class _LoginFormState extends State<Login> {
                         ),
                       ),
                       const SizedBox(height: 10.0),
-                      ElevatedButton(
-                        child: const Text("Iniciar Sesión"),
+                      _isLoading
+                          ? CircularProgressIndicator()
+                          : ElevatedButton(
+                        child: const Text(
+                          "Iniciar Sesión",
+                          style: TextStyle(
+                            color: Colors.lime,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         onPressed: _login,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+
+                          backgroundColor: Colors.indigo.shade800,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
+                          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 70.0),
                         ),
                       ),
                       const SizedBox(height: 20.0),
@@ -176,7 +201,12 @@ class _LoginFormState extends State<Login> {
                       ),
                       const SizedBox(height: 10.0),
                       ElevatedButton(
-                        child: const Text("Regístrate y mejora tu salud"),
+                        child: const Text("Regístrate ",
+                        style: TextStyle(
+                          color: Colors.lime,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -184,11 +214,11 @@ class _LoginFormState extends State<Login> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.lightBlue,
+                          backgroundColor: Colors.indigo.shade800,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
+                          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 80.0),
                         ),
                       ),
                     ],
