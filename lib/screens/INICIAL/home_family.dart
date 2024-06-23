@@ -4,8 +4,8 @@ import '../../widgets/drawer.dart';
 import '../alertas.dart';
 
 
-import 'lista_familiares.dart';
-import 'perfil.dart';
+import '../../widgets/lista_familiares.dart';
+import '../LOGEO/perfil.dart';
 
 class HomeFamily extends StatelessWidget {
   final User currentUser;

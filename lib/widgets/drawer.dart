@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../screens/INICIAL/perfil.dart';
+import '../screens/LOGEO/perfil.dart';
 import '../screens/settings_page.dart'; // Asegúrate de tener esta importación correcta
 import '../models/health_data.dart'; // Asegúrate de tener esta importación correcta
 

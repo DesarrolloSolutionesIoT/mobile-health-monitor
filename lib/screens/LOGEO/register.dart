@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:health_guard_monitor/screens/INICIAL/login.dart';
+import 'package:health_guard_monitor/screens/LOGEO/login.dart';
 import '../../models/user.dart';
 
 class Register extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'home_doctor_nurse.dart';
-import 'home_family.dart';
+import '../INICIAL/home_doctor_nurse.dart';
+import '../INICIAL/home_family.dart';
 import 'register.dart';
 import 'forget_password.dart';
 import '../../models/user.dart';
