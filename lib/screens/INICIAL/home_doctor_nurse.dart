@@ -5,6 +5,7 @@ import '../../models/patient.dart';
 import '../../widgets/patient_card.dart';
 import '../../widgets/drawer.dart';
 import '../alertas.dart';
+import '../../widgets/main_layout.dart'; // Asegúrate de importar el archivo donde definiste MainLayout
 
 class HomeDoctorNurse extends StatefulWidget {
   final User currentUser;
@@ -29,13 +30,12 @@ class _HomeDoctorNurseState extends State<HomeDoctorNurse> with SingleTickerProv
       admissionDate: DateTime.now(),
       currentState: 'Crítico',
     ),
-
   ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this); // Ajuste en el número de pestañas
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -46,33 +46,19 @@ class _HomeDoctorNurseState extends State<HomeDoctorNurse> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2, // Número de pestañas
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('HealthCare'),
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: const [
-              Tab(text: 'Lista de Pacientes'),
-              Tab(text: 'Alertas'),
-            ],
-          ),
-          actions: [
-            Builder(
-              builder: (BuildContext context) {
-                return IconButton(
-                  icon: Icon(Icons.menu),
-                  onPressed: () {
-                    Scaffold.of(context).openEndDrawer();
-                  },
-                );
-              },
-            ),
+    return MainLayout(
+      appBar: AppBar(
+        title: const Text('HealthCare'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(text: 'Lista de Pacientes'),
+            Tab(text: 'Alertas'),
           ],
         ),
-        endDrawer: AppDrawer(), // Usar endDrawer en lugar de drawer
-        body: TabBarView(
+      ),
+      child: SafeArea(
+        child: TabBarView(
           controller: _tabController,
           children: [
             ListView.builder(
