@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:health_guard_monitor/screens/LOGEO/register_admin.dart';
-import 'package:health_guard_monitor/screens/LOGEO/register_user.dart';
+import 'package:health_guard_monitor/screens/registro/register_admin.dart';
+import 'package:health_guard_monitor/screens/registro/register_user.dart';
 import 'package:provider/provider.dart';
 import 'models/health_data.dart';
 import 'screens/LOGEO/login.dart';

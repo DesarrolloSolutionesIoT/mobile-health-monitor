@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../screens/LOGEO/login.dart';
 import '../screens/LOGEO/perfil.dart';
 import '../screens/settings_page.dart'; // Asegúrate de tener esta importación correcta
 import '../models/health_data.dart'; // Asegúrate de tener esta importación correcta
+
 
 class AppDrawer extends StatelessWidget {
   void _openSettings(BuildContext context) async {
@@ -25,6 +27,13 @@ class AppDrawer extends StatelessWidget {
       provider.notificationsEnabled = result;
       provider.notifyListeners();
     }
+  }
+
+  void _logout(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
+    );
   }
 
   @override
@@ -95,11 +104,12 @@ class AppDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.logout),
-             title: Text('Logout'),
-               onTap: () {
-                 Navigator.pop(context);
-               },
-           )
+            title: Text('Logout'),
+            onTap: () {
+              Navigator.pop(context);
+              _logout(context); // Llama a la función de logout
+            },
+          )
         ],
       ),
     );

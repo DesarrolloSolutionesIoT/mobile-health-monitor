@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:health_guard_monitor/screens/LOGEO/select_user_type.dart';
-import '../INICIAL/home_doctor_nurse.dart';
-import '../INICIAL/home_family.dart';
-import 'register.dart';
+import '../home/home_doctor_nurse.dart';
+import '../home/home_family.dart';
+import '../registro/select_user_type.dart';
 import 'forget_password.dart';
 import '../../models/user.dart';
 
@@ -28,7 +27,7 @@ class _LoginFormState extends State<Login> {
 
   void _login() {
     if (_email.isEmpty || _password.isEmpty) {
-      _showDialog('Ingrese los datos solicitados');
+      _showDialog('Complete los datos solicitados');
       return;
     }
 
@@ -40,6 +39,10 @@ class _LoginFormState extends State<Login> {
           (user) => user.email == _email && user.password == _password,
       orElse: () => User(name: '', email: '', password: '', type: '', role: ''),
     );
+
+    setState(() {
+      _isLoading = false;
+    });
 
     if (user.name.isNotEmpty) {
       if (user.role == 'doctor' || user.role == 'nurse') {
@@ -58,14 +61,8 @@ class _LoginFormState extends State<Login> {
         );
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Usuario o contraseña incorrectos')),
-      );
+      _showDialog('Los datos ingresados son erróneos');
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   void _showDialog(String message) {
@@ -236,7 +233,7 @@ class _LoginFormState extends State<Login> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) =>  SelectUserType()),
+                            MaterialPageRoute(builder: (context) => SelectUserType()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
