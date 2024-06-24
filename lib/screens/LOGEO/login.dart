@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_guard_monitor/screens/LOGEO/select_user_type.dart';
 import '../INICIAL/home_doctor_nurse.dart';
 import '../INICIAL/home_family.dart';
 import 'register.dart';
@@ -14,8 +15,8 @@ class Login extends StatefulWidget {
 
 class _LoginFormState extends State<Login> {
   bool _obscureText = true;
-  late String _email;
-  late String _password;
+  late String _email = '';
+  late String _password = '';
   bool _isLoading = false;
 
   final List<User> users = [
@@ -26,6 +27,11 @@ class _LoginFormState extends State<Login> {
   ];
 
   void _login() {
+    if (_email.isEmpty || _password.isEmpty) {
+      _showDialog('Ingrese los datos solicitados');
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -60,6 +66,26 @@ class _LoginFormState extends State<Login> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  void _showDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -143,14 +169,14 @@ class _LoginFormState extends State<Login> {
                       ),
                       const SizedBox(height: 20.0),
                       TextButton(
-                        child: const Text("¿Has olvidado tu contraseña?",
+                        child: const Text(
+                          "¿Has olvidado tu contraseña?",
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.blue,
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0,
                           ),
                           textAlign: TextAlign.center,
-
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -182,7 +208,6 @@ class _LoginFormState extends State<Login> {
                         ),
                         onPressed: _login,
                         style: ElevatedButton.styleFrom(
-
                           backgroundColor: Colors.indigo.shade800,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -201,16 +226,17 @@ class _LoginFormState extends State<Login> {
                       ),
                       const SizedBox(height: 10.0),
                       ElevatedButton(
-                        child: const Text("Regístrate ",
-                        style: TextStyle(
-                          color: Colors.lime,
-                          fontWeight: FontWeight.bold,
+                        child: const Text(
+                          "Regístrate ",
+                          style: TextStyle(
+                            color: Colors.lime,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const Register()),
+                            MaterialPageRoute(builder: (context) =>  SelectUserType()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
