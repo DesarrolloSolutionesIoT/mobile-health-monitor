@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:health_guard_monitor/screens/registro/register_admin.dart';
-import 'package:health_guard_monitor/screens/registro/register_user.dart';
 import 'package:provider/provider.dart';
 import 'models/health_data.dart';
 import 'screens/LOGEO/login.dart';
@@ -29,8 +27,6 @@ class HealthMonitorApp extends StatelessWidget {
       home: Login(),
       routes: {
         '/login': (context) => Login(), // Pantalla de login
-        '/registerAdmin': (context) => RegisterAdmin(),
-        '/registerUser': (context) => RegisterUser(),
       },
     );
   }

@@ -1,25 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class RegisterAdmin extends StatefulWidget {
+class Register extends StatefulWidget {
+  final int typeId;
+
+  Register({required this.typeId});
+
   @override
-  _RegisterAdminState createState() => _RegisterAdminState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _RegisterAdminState extends State<RegisterAdmin> {
+class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
-  late String _name;
-  late String _surname;
+  late String _firstName;
+  late String _lastName;
   late String _email;
   late String _password;
-  late String _companyCode;
 
-  void _register() {
+  void _register() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // Aquí puedes agregar la lógica para registrar al administrador.
+
+      Map<String, dynamic> requestBody = {
+        'firstName': _firstName,
+        'lastName': _lastName,
+        'email': _email,
+        'password': _password,
+        'typeId': widget.typeId,
+      };
+
+      print("Request Body: $requestBody");
+
+      final response = await http.post(
+        Uri.parse('http://localhost:8080/api/auth/register'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      print("Response Status: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        await _getUserByEmail(_email);
+      } else {
+        _showErrorDialog(response.body);
+      }
+    } else {
+      _showErrorDialog("Formulario no válido.");
+    }
+  }
+
+  Future<void> _getUserByEmail(String email) async {
+    final response = await http.get(
+      Uri.parse('http://localhost:8080/api/users/email/$email'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print("User Response Status: ${response.statusCode}");
+    print("User Response Body: ${response.body}");
+
+    if (response.statusCode == 200) {
       _showSuccessDialog();
     } else {
-      _showErrorDialog();
+      _showErrorDialog(response.body);
     }
   }
 
@@ -44,13 +92,13 @@ class _RegisterAdminState extends State<RegisterAdmin> {
     );
   }
 
-  void _showErrorDialog() {
+  void _showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Error'),
-          content: Text('Revise sus datos, algún dato es incorrecto.'),
+          content: Text('Revise sus datos, algún dato es incorrecto. Detalles: $message'),
           actions: <Widget>[
             TextButton(
               child: Text('OK'),
@@ -68,7 +116,7 @@ class _RegisterAdminState extends State<RegisterAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register Admin'),
+        title: Text('Register'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -77,24 +125,24 @@ class _RegisterAdminState extends State<RegisterAdmin> {
           child: ListView(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: InputDecoration(labelText: 'First Name'),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Please enter your name';
+                    return 'Please enter your first name';
                   }
                   return null;
                 },
-                onSaved: (value) => _name = value!,
+                onSaved: (value) => _firstName = value!,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Surname'),
+                decoration: InputDecoration(labelText: 'Last Name'),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Please enter your surname';
+                    return 'Please enter your last name';
                   }
                   return null;
                 },
-                onSaved: (value) => _surname = value!,
+                onSaved: (value) => _lastName = value!,
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Email'),
@@ -116,16 +164,6 @@ class _RegisterAdminState extends State<RegisterAdmin> {
                   return null;
                 },
                 onSaved: (value) => _password = value!,
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Company Code'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter the company code';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _companyCode = value!,
               ),
               SizedBox(height: 20),
               ElevatedButton(

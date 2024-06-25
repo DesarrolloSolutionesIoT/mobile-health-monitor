@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import '../home/home_doctor_nurse.dart';
-import '../home/home_family.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import '../../models/User.dart';
+import '../home/HomeScreen.dart';
 import '../registro/select_user_type.dart';
 import 'forget_password.dart';
-import '../../models/user.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -18,14 +20,7 @@ class _LoginFormState extends State<Login> {
   late String _password = '';
   bool _isLoading = false;
 
-  final List<User> users = [
-    User(name: 'Admin 1', email: 'admin1@example.com', password: 'admin123', type: 'admin', role: ''),
-    User(name: 'Doctor 1', email: 'doctor1@example.com', password: 'doctor123', type: 'user', role: 'doctor'),
-    User(name: 'Nurse 1', email: 'nurse1@example.com', password: 'nurse123', type: 'user', role: 'nurse'),
-    User(name: 'Family 1', email: 'family1@example.com', password: 'family123', type: 'user', role: 'family'),
-  ];
-
-  void _login() {
+  void _login() async {
     if (_email.isEmpty || _password.isEmpty) {
       _showDialog('Complete los datos solicitados');
       return;
@@ -35,34 +30,60 @@ class _LoginFormState extends State<Login> {
       _isLoading = true;
     });
 
-    User? user = users.firstWhere(
-          (user) => user.email == _email && user.password == _password,
-      orElse: () => User(name: '', email: '', password: '', type: '', role: ''),
+    Map<String, dynamic> requestBody = {
+      'email': _email,
+      'password': _password,
+    };
+
+    print("Request Body: $requestBody");
+
+    final response = await http.post(
+      Uri.parse('http://localhost:8080/api/auth/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(requestBody),
     );
+
+    print("Response Status: ${response.statusCode}");
+    print("Response Body: ${response.body}");
 
     setState(() {
       _isLoading = false;
     });
 
-    if (user.name.isNotEmpty) {
-      if (user.role == 'doctor' || user.role == 'nurse') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeDoctorNurse(currentUser: user),
-          ),
-        );
-      } else if (user.role == 'family') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeFamily(currentUser: user),
-          ),
-        );
-      }
+    if (response.statusCode == 200) {
+      await _getUserByEmail(_email);
     } else {
-      _showDialog('Los datos ingresados son erróneos');
+      _showDialog('Los datos ingresados son erróneos. Detalles: ${response.body}');
     }
+  }
+
+  Future<void> _getUserByEmail(String email) async {
+    final response = await http.get(
+      Uri.parse('http://localhost:8080/api/users/email/$email'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    print("User Response Status: ${response.statusCode}");
+    print("User Response Body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final userData = jsonDecode(response.body);
+      User user = User.fromJson(userData);
+      UserMemory.setUser(user);
+      _navigateToHome();
+    } else {
+      _showDialog('Error al obtener los datos del usuario. Detalles: ${response.body}');
+    }
+  }
+
+  void _navigateToHome() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
   }
 
   void _showDialog(String message) {
