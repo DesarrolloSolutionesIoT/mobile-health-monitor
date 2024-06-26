@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'chart_data.dart';
+import '../models/chart_data.dart';
 
 class HealthCard extends StatelessWidget {
   final String title;

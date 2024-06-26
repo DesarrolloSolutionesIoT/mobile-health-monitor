@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'home_page/home_page.dart';
+import 'package:provider/provider.dart';
+import 'screens/LOGEO/login.dart';
 
 void main() {
   runApp(HealthMonitorApp());
@@ -14,7 +15,10 @@ class HealthMonitorApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: HealthMonitorHomePage(),
+      home: Login(),
+      routes: {
+        '/login': (context) => Login(), // Pantalla de login
+      },
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../health_card.dart';
-import 'health_data.dart';
+import '../screens/home/HealthDataProvider.dart';
+import 'health_card.dart';
 
 class HealthMonitor extends StatelessWidget {
   @override
