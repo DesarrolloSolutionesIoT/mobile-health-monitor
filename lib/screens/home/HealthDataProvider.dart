@@ -10,6 +10,7 @@ class HealthDataProvider extends ChangeNotifier {
   final int patientId;
   final String firebaseUrl = 'https://healthguard-wokwi-default-rtdb.firebaseio.com/.json';
   Map<String, dynamic> healthData = {};
+  Map<String, dynamic> patientData = {};
   bool isLoading = true;
   String errorMessage = '';
   Timer? _timer;
@@ -44,6 +45,7 @@ class HealthDataProvider extends ChangeNotifier {
   Future<void> fetchData() async {
     await fetchIoTData(); // Primero obtenemos los datos de IoT
     await fetchHealthDataFromFirebase(); // Luego obtenemos los datos de Firebase
+    await fetchPatientData(); // Finalmente obtenemos los datos del paciente
   }
 
   Future<void> fetchHealthDataFromFirebase() async {
@@ -106,6 +108,22 @@ class HealthDataProvider extends ChangeNotifier {
       );
       if (response.statusCode != 200 && response.statusCode != 204) {
         errorMessage = 'Failed to update local server: ${response.statusCode}';
+        notifyListeners();
+      }
+    } catch (e) {
+      errorMessage = 'An error occurred: $e';
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchPatientData() async {
+    try {
+      final response = await http.get(Uri.parse('http://localhost:8080/api/patients/$patientId'));
+      if (response.statusCode == 200) {
+        patientData = json.decode(response.body);
+        notifyListeners();
+      } else {
+        errorMessage = 'Failed to load patient data: ${response.statusCode}';
         notifyListeners();
       }
     } catch (e) {

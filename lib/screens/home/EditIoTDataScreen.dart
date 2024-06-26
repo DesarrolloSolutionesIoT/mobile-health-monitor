@@ -19,10 +19,6 @@ class _EditIoTDataScreenState extends State<EditIoTDataScreen> {
   late String _serialNumber;
   late int _patientId;
   late String _fechaDeEntrada;
-  late int _temperature;
-  late int _oximeter;
-  late int _heartRate;
-  late int _respiratoryRate;
   late String _ultimaFecha;
 
   List<Patient> patients = [];
@@ -33,10 +29,6 @@ class _EditIoTDataScreenState extends State<EditIoTDataScreen> {
     _serialNumber = widget.iotData['serialNumber'];
     _patientId = widget.iotData['patientId'];
     _fechaDeEntrada = widget.iotData['fechaDeEntrada'];
-    _temperature = widget.iotData['temperature'];
-    _oximeter = widget.iotData['oximeter'];
-    _heartRate = widget.iotData['heartRate'];
-    _respiratoryRate = widget.iotData['respiratoryRate'];
     _ultimaFecha = widget.iotData['ultimaFecha'];
     fetchPatients();
   }
@@ -65,11 +57,12 @@ class _EditIoTDataScreenState extends State<EditIoTDataScreen> {
         'serialNumber': _serialNumber,
         'patientId': _patientId,
         'fechaDeEntrada': _fechaDeEntrada,
-        'temperature': _temperature,
-        'oximeter': _oximeter,
-        'heartRate': _heartRate,
-        'respiratoryRate': _respiratoryRate,
         'ultimaFecha': _ultimaFecha,
+        // Mantener los mismos valores para los datos de monitoreo
+        'temperature': widget.iotData['temperature'],
+        'oximeter': widget.iotData['oximeter'],
+        'heartRate': widget.iotData['heartRate'],
+        'respiratoryRate': widget.iotData['respiratoryRate'],
       };
 
       final response = await http.put(
@@ -175,54 +168,6 @@ class _EditIoTDataScreenState extends State<EditIoTDataScreen> {
                   ),
                 ),
                 controller: TextEditingController(text: _ultimaFecha),
-              ),
-              TextFormField(
-                initialValue: _temperature.toString(),
-                decoration: InputDecoration(labelText: 'Temperatura'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Por favor ingrese la temperatura';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _temperature = int.parse(value!),
-              ),
-              TextFormField(
-                initialValue: _oximeter.toString(),
-                decoration: InputDecoration(labelText: 'Oxímetro'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Por favor ingrese el oxímetro';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _oximeter = int.parse(value!),
-              ),
-              TextFormField(
-                initialValue: _heartRate.toString(),
-                decoration: InputDecoration(labelText: 'Ritmo Cardiaco'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Por favor ingrese el ritmo cardiaco';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _heartRate = int.parse(value!),
-              ),
-              TextFormField(
-                initialValue: _respiratoryRate.toString(),
-                decoration: InputDecoration(labelText: 'Ritmo Respiratorio'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Por favor ingrese el ritmo respiratorio';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _respiratoryRate = int.parse(value!),
               ),
               SizedBox(height: 20),
               ElevatedButton(
