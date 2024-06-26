@@ -11,10 +11,10 @@ class HealthDataProvider extends ChangeNotifier {
   String errorMessage = '';
   Timer? _timer;
 
-  List<ChartData> bodyTemperatureData = [];
-  List<ChartData> breathRateData = [];
-  List<ChartData> heartRateData = [];
-  List<ChartData> oxygenLevelData = [];
+  List<ChartData> bodyTemperatureData = List.generate(10, (index) => ChartData(index.toDouble(), 0));
+  List<ChartData> breathRateData = List.generate(10, (index) => ChartData(index.toDouble(), 0));
+  List<ChartData> heartRateData = List.generate(10, (index) => ChartData(index.toDouble(), 0));
+  List<ChartData> oxygenLevelData = List.generate(10, (index) => ChartData(index.toDouble(), 0));
 
   HealthDataProvider() {
     fetchHealthData();
@@ -51,17 +51,14 @@ class HealthDataProvider extends ChangeNotifier {
   }
 
   void updateChartData(List<ChartData> data, double value) {
-    if (data.length < 9) {
-      // Inicializar la lista con el valor actual si aún no tiene 9 elementos
-      data.add(ChartData(data.length.toDouble(), value));
-    } else {
-      // Desplazar todos los puntos un lugar hacia la izquierda
-      for (int i = 0; i < data.length - 1; i++) {
-        data[i] = ChartData(i.toDouble(), data[i + 1].y);
-      }
-      // Añadir el nuevo valor en la última posición (posición 8)
-      data[data.length - 1] = ChartData((data.length - 1).toDouble(), value);
+    // Desplazar todos los puntos un lugar hacia la izquierda
+    for (int i = 0; i < 9; i++) {
+      data[i] = ChartData(i.toDouble(), data[i + 1].y);
     }
+    // Añadir el nuevo valor en la posición 8
+    data[8] = ChartData(8.0, value);
+    // Mantener la posición 9 vacía
+    data[9] = ChartData(9.0, 0.0);
     notifyListeners();
   }
 }

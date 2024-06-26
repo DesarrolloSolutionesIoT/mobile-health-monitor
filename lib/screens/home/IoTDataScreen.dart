@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'AddIoTDataScreen.dart';
 import 'EditIoTDataScreen.dart';
+import 'LiveMonitoringScreen.dart'; // Importar la nueva pantalla
 import '../../models/patient.dart';
 
 class IoTDataScreen extends StatefulWidget {
@@ -88,6 +89,7 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
       return null;
     }
   }
+
   void refreshIoTData() {
     fetchIoTData();
   }
@@ -128,7 +130,12 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
                   IconButton(
                     icon: Icon(Icons.visibility),
                     onPressed: () {
-                      // Navegar a la pantalla de monitoreo en vivo
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LiveMonitoringScreen(iotData: data),
+                        ),
+                      );
                     },
                   ),
                   IconButton(
