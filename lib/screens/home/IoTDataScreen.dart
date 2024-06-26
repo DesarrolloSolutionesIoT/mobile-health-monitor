@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,34 +15,14 @@ class IoTDataScreen extends StatefulWidget {
 
 class _IoTDataScreenState extends State<IoTDataScreen> {
   List<dynamic> iotData = [];
-  List<Patient> patients = [];
+  Map<int, Patient> patientsMap = {};
   bool _isLoading = true;
   String _errorMessage = '';
 
   @override
   void initState() {
     super.initState();
-    fetchPatients();
     fetchIoTData();
-  }
-
-  Future<void> fetchPatients() async {
-    try {
-      final response = await http.get(Uri.parse('http://localhost:8080/api/patients'));
-      if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.body);
-        setState(() {
-          patients = data.map((patient) => Patient.fromJson(patient)).toList();
-        });
-      } else {
-        throw Exception('Failed to load patients');
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Error: $e';
-      });
-    }
   }
 
   Future<void> fetchIoTData() async {
@@ -51,6 +32,14 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
         List<dynamic> data = jsonDecode(response.body);
         setState(() {
           iotData = data;
+        });
+        // Fetch patient details for each IoT data entry
+        for (var entry in data) {
+          if (entry['patientId'] != null) {
+            await fetchPatientDetails(entry['patientId']);
+          }
+        }
+        setState(() {
           _isLoading = false;
         });
       } else {
@@ -64,6 +53,22 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
         _isLoading = false;
         _errorMessage = 'Error: $e';
       });
+    }
+  }
+
+  Future<void> fetchPatientDetails(int patientId) async {
+    try {
+      final response = await http.get(Uri.parse('http://localhost:8080/api/patients/$patientId'));
+      if (response.statusCode == 200) {
+        final patient = Patient.fromJson(jsonDecode(response.body));
+        setState(() {
+          patientsMap[patientId] = patient;
+        });
+      } else {
+        throw Exception('Failed to load patient details');
+      }
+    } catch (e) {
+      print('Error: $e');
     }
   }
 
@@ -83,11 +88,7 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
   }
 
   Patient? findPatientById(int patientId) {
-    try {
-      return patients.firstWhere((patient) => patient.id == patientId);
-    } catch (e) {
-      return null;
-    }
+    return patientsMap[patientId];
   }
 
   void refreshIoTData() {
@@ -130,10 +131,13 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
                   IconButton(
                     icon: Icon(Icons.visibility),
                     onPressed: () {
+                      print('Navigating to LiveMonitoringScreen with iotDataId: ${data['id']} and patientId: ${data['patientId']}');
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => LiveMonitoringScreen(iotData: data),
+                          builder: (context) => LiveMonitoringScreen(
+                            iotDataId: data['id'], patientId : data['patientId']
+                          ),
                         ),
                       );
                     },

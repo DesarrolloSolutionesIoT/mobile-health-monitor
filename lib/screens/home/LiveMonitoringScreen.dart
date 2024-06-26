@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/DataCard.dart';
+import 'HealthDataProvider.dart';
 import '../../models/chart_data.dart';
-import '../../models/health_data.dart';
 import 'ChartWidget.dart';
 
 class LiveMonitoringScreen extends StatelessWidget {
-  final Map<String, dynamic> iotData;
-
-  LiveMonitoringScreen({required this.iotData});
+  final int iotDataId;
+  final int patientId;
+  LiveMonitoringScreen({required this.iotDataId, required this.patientId});
 
   @override
   Widget build(BuildContext context) {
+    print('Initializing LiveMonitoringScreen with iotDataId: $iotDataId');
     return ChangeNotifierProvider(
-      create: (context) => HealthDataProvider(),
+      create: (context) => HealthDataProvider(iotDataId: iotDataId,patientId: patientId ),
       child: Scaffold(
         appBar: AppBar(
           title: Text('Monitoreo en Vivo'),
@@ -60,6 +60,40 @@ class LiveMonitoringScreen extends StatelessWidget {
             }
           },
         ),
+      ),
+    );
+  }
+}
+
+class DataCard extends StatelessWidget {
+  final String title;
+  final List<ChartData> data;
+  final dynamic currentValue;
+  final double minY;
+  final double maxY;
+
+  DataCard({
+    required this.title,
+    required this.data,
+    required this.currentValue,
+    required this.minY,
+    required this.maxY,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            title: Text(title),
+            subtitle: Text('Valor Actual: $currentValue'),
+          ),
+          Container(
+            height: 200,
+            child: ChartWidget(data: data, minY: minY, maxY: maxY),
+          ),
+        ],
       ),
     );
   }
