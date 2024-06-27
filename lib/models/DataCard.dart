@@ -10,6 +10,8 @@ class DataCard extends StatelessWidget {
   final dynamic currentValue;
   final double minY;
   final double maxY;
+  final double thresholdMin;
+  final double thresholdMax;
 
   DataCard({
     required this.title,
@@ -17,6 +19,8 @@ class DataCard extends StatelessWidget {
     required this.currentValue,
     required this.minY,
     required this.maxY,
+    required this.thresholdMin,
+    required this.thresholdMax,
   });
 
   @override
@@ -30,7 +34,7 @@ class DataCard extends StatelessWidget {
           ),
           Container(
             height: 200,
-            child: ChartWidget(data: data, minY: minY, maxY: maxY),
+            child: ChartWidget(data: data, minY: minY, maxY: maxY, thresholdMin: thresholdMin, thresholdMax: thresholdMax),
           ),
         ],
       ),
