@@ -11,7 +11,7 @@ class SelectUserType extends StatefulWidget {
 
 class _SelectUserTypeState extends State<SelectUserType> {
   Future<List<UserType>> fetchUserTypes() async {
-    final response = await http.get(Uri.parse('http://localhost:8080/api/typeofuser'));
+    final response = await http.get(Uri.parse('http://52.170.24.189:8080/api/typeofuser'));
 
     if (response.statusCode == 200) {
       List<dynamic> typesJson = jsonDecode(response.body);

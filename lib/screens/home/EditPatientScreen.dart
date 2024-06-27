@@ -50,7 +50,7 @@ class _EditPatientScreenState extends State<EditPatientScreen> {
       print('Updated Patient Data: ${updatedPatient.toJson()}');
 
       final response = await http.put(
-        Uri.parse('http://localhost:8080/api/patients/$_id'),
+        Uri.parse('http://52.170.24.189:8080/api/patients/$_id'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

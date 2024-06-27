@@ -35,7 +35,7 @@ class _EditIoTDataScreenState extends State<EditIoTDataScreen> {
 
   Future<void> fetchPatients() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:8080/api/patients'));
+      final response = await http.get(Uri.parse('http://52.170.24.189:8080/api/patients'));
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
         setState(() {
@@ -66,7 +66,7 @@ class _EditIoTDataScreenState extends State<EditIoTDataScreen> {
       };
 
       final response = await http.put(
-        Uri.parse('http://localhost:8080/api/iotdata/${widget.iotData['id']}'),
+        Uri.parse('http://52.170.24.189:8080/api/iotdata/${widget.iotData['id']}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

@@ -31,7 +31,7 @@ class _AddIoTDataScreenState extends State<AddIoTDataScreen> {
 
   Future<void> fetchPatients() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:8080/api/patients'));
+      final response = await http.get(Uri.parse('http://52.170.24.189:8080/api/patients'));
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
         setState(() {

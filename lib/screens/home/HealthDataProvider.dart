@@ -79,7 +79,7 @@ class HealthDataProvider extends ChangeNotifier {
 
   Future<void> fetchIoTData() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:8080/api/iotdata/$iotDataId'));
+      final response = await http.get(Uri.parse('http://52.170.24.189:8080/api/iotdata/$iotDataId'));
       if (response.statusCode == 200) {
         final iotData = json.decode(response.body);
         print('Fetched IoT data with iotDataId: $iotDataId');
@@ -97,7 +97,7 @@ class HealthDataProvider extends ChangeNotifier {
   Future<void> updateLocalServer(Map<String, dynamic> iotData) async {
     try {
       final response = await http.put(
-        Uri.parse('http://localhost:8080/api/iotdata/values/$iotDataId'),
+        Uri.parse('http://52.170.24.189:8080/api/iotdata/values/$iotDataId'),
         headers: {"Content-Type": "application/json"},
         body: json.encode({
           "temperature": healthData["temperature"],
@@ -118,7 +118,7 @@ class HealthDataProvider extends ChangeNotifier {
 
   Future<void> fetchPatientData() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:8080/api/patients/$patientId'));
+      final response = await http.get(Uri.parse('http://52.170.24.189:8080/api/patients/$patientId'));
       if (response.statusCode == 200) {
         patientData = json.decode(response.body);
         notifyListeners();

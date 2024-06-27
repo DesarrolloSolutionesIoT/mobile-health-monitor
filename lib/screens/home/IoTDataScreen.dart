@@ -27,7 +27,7 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
 
   Future<void> fetchIoTData() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:8080/api/iotdata'));
+      final response = await http.get(Uri.parse('http://52.170.24.189:8080/api/iotdata'));
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
         setState(() {
@@ -58,7 +58,7 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
 
   Future<void> fetchPatientDetails(int patientId) async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:8080/api/patients/$patientId'));
+      final response = await http.get(Uri.parse('http://52.170.24.189:8080/api/patients/$patientId'));
       if (response.statusCode == 200) {
         final patient = Patient.fromJson(jsonDecode(response.body));
         setState(() {
@@ -74,7 +74,7 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
 
   Future<void> deleteIoTData(int id) async {
     try {
-      final response = await http.delete(Uri.parse('http://localhost:8080/api/iotdata/$id'));
+      final response = await http.delete(Uri.parse('http://52.170.24.189:8080/api/iotdata/$id'));
       if (response.statusCode == 204) {
         setState(() {
           iotData.removeWhere((data) => data['id'] == id);

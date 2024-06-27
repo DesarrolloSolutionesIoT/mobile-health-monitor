@@ -38,7 +38,7 @@ class _LoginFormState extends State<Login> {
     print("Request Body: $requestBody");
 
     final response = await http.post(
-      Uri.parse('http://localhost:8080/api/auth/login'),
+      Uri.parse('http://52.170.24.189:8080/api/auth/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -61,7 +61,7 @@ class _LoginFormState extends State<Login> {
 
   Future<void> _getUserByEmail(String email) async {
     final response = await http.get(
-      Uri.parse('http://localhost:8080/api/users/email/$email'),
+      Uri.parse('http://52.170.24.189:8080/api/users/email/$email'),
       headers: {
         'Content-Type': 'application/json',
       },

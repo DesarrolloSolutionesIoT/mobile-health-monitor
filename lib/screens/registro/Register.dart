@@ -33,7 +33,7 @@ class _RegisterState extends State<Register> {
       print("Request Body: $requestBody");
 
       final response = await http.post(
-        Uri.parse('http://localhost:8080/api/auth/register'),
+        Uri.parse('http://52.170.24.189:8080/api/auth/register'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -55,7 +55,7 @@ class _RegisterState extends State<Register> {
 
   Future<void> _getUserByEmail(String email) async {
     final response = await http.get(
-      Uri.parse('http://localhost:8080/api/users/email/$email'),
+      Uri.parse('http://52.170.24.189:8080/api/users/email/$email'),
       headers: {
         'Content-Type': 'application/json',
       },

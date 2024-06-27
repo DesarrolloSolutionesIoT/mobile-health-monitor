@@ -28,7 +28,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
       };
 
       final response = await http.post(
-        Uri.parse('http://localhost:8080/api/patients'),
+        Uri.parse('http://52.170.24.189:8080/api/patients'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
