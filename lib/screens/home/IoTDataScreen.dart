@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:async';
 import 'dart:convert';
 
 import 'AddIoTDataScreen.dart';
@@ -16,13 +17,24 @@ class IoTDataScreen extends StatefulWidget {
 class _IoTDataScreenState extends State<IoTDataScreen> {
   List<dynamic> iotData = [];
   Map<int, Patient> patientsMap = {};
+  Map<String, dynamic> healthData = {};
   bool _isLoading = true;
   String _errorMessage = '';
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     fetchIoTData();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      fetchHealthDataFromFirebase();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   Future<void> fetchIoTData() async {
@@ -72,6 +84,58 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
     }
   }
 
+  Future<void> fetchHealthDataFromFirebase() async {
+    final String firebaseUrl = 'https://healthguard-wokwi-default-rtdb.firebaseio.com/.json';
+    try {
+      final response = await http.get(Uri.parse(firebaseUrl));
+      if (response.statusCode == 200) {
+        final firebaseData = json.decode(response.body);
+        setState(() {
+          healthData = {
+            "temperature": firebaseData["HealthData"]["bodyTemperature"],
+            "respiratoryRate": firebaseData["HealthData"]["breathRate"],
+            "heartRate": firebaseData["HealthData"]["heartRate"],
+            "oximeter": firebaseData["HealthData"]["oxygenLevel"],
+          };
+        });
+        updateLocalServer();
+      } else {
+        setState(() {
+          _errorMessage = 'Failed to load data from Firebase: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'An error occurred: $e';
+      });
+    }
+  }
+
+  Future<void> updateLocalServer() async {
+    final int iotDataId = 1; // Ajusta este valor según sea necesario
+    try {
+      final response = await http.put(
+        Uri.parse('http://52.170.24.189:8080/api/iotdata/values/$iotDataId'),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          "temperature": healthData["temperature"],
+          "oximeter": healthData["oximeter"],
+          "heartRate": healthData["heartRate"],
+          "respiratoryRate": healthData["respiratoryRate"]
+        }),
+      );
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        setState(() {
+          _errorMessage = 'Failed to update local server: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'An error occurred: $e';
+      });
+    }
+  }
+
   Future<void> deleteIoTData(int id) async {
     try {
       final response = await http.delete(Uri.parse('http://52.170.24.189:8080/api/iotdata/$id'));
@@ -113,17 +177,37 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
           return Card(
             child: ListTile(
               title: Text('Serial Number: ${data['serialNumber']}'),
-              subtitle: Text(
-                patient != null
-                    ? 'Paciente: ${patient.firstName} ${patient.lastName} (DNI: ${patient.dni})\n'
-                    'Edad: ${patient.age}\nGénero: ${patient.gender}\n'
-                    'Fecha de Entrada: ${data['fechaDeEntrada']}\n'
-                    'Temperatura: ${data['temperature']}\n'
-                    'Oxímetro: ${data['oximeter']}\n'
-                    'Ritmo Cardiaco: ${data['heartRate']}\n'
-                    'Ritmo Respiratorio: ${data['respiratoryRate']}\n'
-                    'Última Fecha: ${data['ultimaFecha']}'
-                    : 'Paciente no encontrado',
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (patient != null)
+                    Text(
+                      'Paciente: ${patient.firstName} ${patient.lastName} (DNI: ${patient.dni})\n'
+                          'Edad: ${patient.age}\nGénero: ${patient.gender}',
+                    )
+                  else
+                    Text('Paciente no encontrado'),
+                  SizedBox(height: 8),
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildMeasurementItem('Temperatura', healthData['temperature'].toStringAsFixed(2)),
+                          _buildMeasurementItem('Oxímetro', healthData['oximeter'].toString()),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildMeasurementItem('Ritmo Cardiaco', healthData['heartRate'].toString()),
+                          _buildMeasurementItem('Ritmo Respiratorio', healthData['respiratoryRate'].toString()),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -136,7 +220,7 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => LiveMonitoringScreen(
-                            iotDataId: data['id'], patientId : data['patientId']
+                              iotDataId: data['id'], patientId : data['patientId']
                           ),
                         ),
                       );
@@ -181,6 +265,21 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
         child: Icon(Icons.add),
         backgroundColor: Colors.blue,
       ),
+    );
+  }
+
+  Widget _buildMeasurementItem(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 4),
+        Text(value),
+      ],
     );
   }
 }
