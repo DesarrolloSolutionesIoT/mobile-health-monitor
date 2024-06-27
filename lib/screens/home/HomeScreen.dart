@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/User.dart';
+import 'NotificationsScreen.dart';
 import 'PatientScreen.dart';
 import 'ProfileScreen.dart';
 import 'IoTDataScreen.dart'; // Importa la nueva pantalla
@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static List<Widget> _widgetOptions = <Widget>[
     PatientScreen(),
     IoTDataScreen(), // Añadir la nueva pantalla
-    Center(child: Text('Notificaciones', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold))),
+    NotificationsScreen(), // Añadir la nueva pantalla de notificaciones
     ProfileScreen(),
   ];
 

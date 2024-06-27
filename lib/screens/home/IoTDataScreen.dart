@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'AddIoTDataScreen.dart';
 import 'EditIoTDataScreen.dart';
@@ -22,14 +24,30 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
   String _errorMessage = '';
   Timer? _timer;
 
+  final double temperatureThresholdMin = 36.0;
+  final double temperatureThresholdMax = 37.5;
+  final double oximeterThresholdMin = 95;
+  final double oximeterThresholdMax = 100;
+  final double heartRateThresholdMin = 60;
+  final double heartRateThresholdMax = 100;
+  final double respiratoryRateThresholdMin = 12;
+  final double respiratoryRateThresholdMax = 20;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
   @override
   void initState() {
     super.initState();
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+    final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
     fetchIoTData();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       fetchHealthDataFromFirebase();
     });
   }
+
 
   @override
   void dispose() {
@@ -155,8 +173,38 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
     return patientsMap[patientId];
   }
 
+  Future<void> _showNotification(String title, String body) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'your channel id',
+      'your channel name',
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,
+    );
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      title,
+      body,
+      platformChannelSpecifics,
+      payload: 'item x',
+    );
+  }
+
   void refreshIoTData() {
     fetchIoTData();
+  }
+
+  void _showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
   }
 
   @override
@@ -193,16 +241,16 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildMeasurementItem('Temperatura', healthData['temperature'].toStringAsFixed(2)),
-                          _buildMeasurementItem('Oxímetro', healthData['oximeter'].toString()),
+                          _buildMeasurementItem('Temperatura', healthData['temperature'].toStringAsFixed(2), temperatureThresholdMin, temperatureThresholdMax),
+                          _buildMeasurementItem('Oxímetro', healthData['oximeter'].toString(), oximeterThresholdMin, oximeterThresholdMax),
                         ],
                       ),
                       SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildMeasurementItem('Ritmo Cardiaco', healthData['heartRate'].toString()),
-                          _buildMeasurementItem('Ritmo Respiratorio', healthData['respiratoryRate'].toString()),
+                          _buildMeasurementItem('Ritmo Cardiaco', healthData['heartRate'].toString(), heartRateThresholdMin, heartRateThresholdMax),
+                          _buildMeasurementItem('Ritmo Respiratorio', healthData['respiratoryRate'].toString(), respiratoryRateThresholdMin, respiratoryRateThresholdMax),
                         ],
                       ),
                     ],
@@ -268,18 +316,33 @@ class _IoTDataScreenState extends State<IoTDataScreen> {
     );
   }
 
-  Widget _buildMeasurementItem(String label, String value) {
+  Widget _buildMeasurementItem(String label, String value, double min, double max) {
+    double doubleValue = double.parse(value);
+    Color color = (doubleValue < min || doubleValue > max) ? Colors.red : Colors.blue;
+
+    if (color == Colors.red) {
+      _showToast('$label fuera de los umbrales: $value');
+      _showNotification('$label fuera de los umbrales', '$label está en $value, fuera del rango $min - $max');
+    }
+
     return Column(
       children: [
         Text(
           label,
           style: TextStyle(
             fontWeight: FontWeight.bold,
+            color: color,
           ),
         ),
         SizedBox(height: 4),
-        Text(value),
+        Text(
+          value,
+          style: TextStyle(
+            color: color,
+          ),
+        ),
       ],
     );
   }
+
 }

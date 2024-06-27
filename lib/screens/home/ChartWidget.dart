@@ -9,7 +9,46 @@ class ChartWidget extends StatelessWidget {
   final double thresholdMin;
   final double thresholdMax;
 
-  ChartWidget({required this.data, required this.minY, required this.maxY, required this.thresholdMin, required this.thresholdMax});
+  ChartWidget({
+    required this.data,
+    required this.minY,
+    required this.maxY,
+    required this.thresholdMin,
+    required this.thresholdMax,
+  });
+
+  List<LineChartBarData> _createLineChartBarData(List<ChartData> data) {
+    List<LineChartBarData> lines = [];
+
+    for (int i = 0; i < data.length - 1; i++) {
+      Color colorData = (data[i].y < thresholdMin || data[i].y > thresholdMax) ? Colors.red : Colors.blue;
+
+      lines.add(LineChartBarData(
+        spots: [
+          FlSpot(data[i].x, data[i].y),
+          FlSpot(data[i + 1].x, data[i + 1].y),
+        ],
+        isCurved: true,
+        color: colorData,
+        barWidth: 2,
+        belowBarData: BarAreaData(show: false),
+        dotData: FlDotData(
+          show: true,
+          getDotPainter: (spot, percent, barData, index) {
+            Color dotColor = (spot.y < thresholdMin || spot.y > thresholdMax) ? Colors.red : Colors.blue;
+            return FlDotCirclePainter(
+              radius: 4,
+              color: dotColor,
+              strokeWidth: 2,
+              strokeColor: Colors.black,
+            );
+          },
+        ),
+      ));
+    }
+
+    return lines;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,14 +95,7 @@ class ChartWidget extends StatelessWidget {
           minY: minY,
           maxY: maxY,
           lineBarsData: [
-            LineChartBarData(
-              spots: data.take(9).map((point) => FlSpot(point.x, point.y)).toList(),
-              isCurved: true,
-              color: Colors.blue,
-              barWidth: 2,
-              belowBarData: BarAreaData(show: false),
-              dotData: FlDotData(show: true),
-            ),
+            ..._createLineChartBarData(data),
             LineChartBarData(
               spots: [
                 FlSpot(0, thresholdMax),

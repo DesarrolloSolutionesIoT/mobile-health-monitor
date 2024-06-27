@@ -33,6 +33,7 @@ dependencies:
   http: ^0.13.3
   syncfusion_flutter_charts: ^20.2.47
   provider: ^6.0.0
+  flutter_local_notifications: ^17.1.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -51,6 +52,7 @@ dev_dependencies:
   flutter_lints: ^3.0.0
   shared_preferences: ^2.2.3
   flutter_dotenv: ^5.1.0
+  fluttertoast: ^8.2.6
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
