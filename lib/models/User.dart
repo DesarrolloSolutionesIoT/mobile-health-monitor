@@ -17,13 +17,18 @@ class User {
 }
 
 class UserMemory {
-  static User? currentUser;
+  static User? _currentUser;
 
   static void setUser(User user) {
-    currentUser = user;
+    _currentUser = user;
   }
 
   static User? getUser() {
-    return currentUser;
+    return _currentUser;
+  }
+
+  // Método para eliminar al usuario almacenado
+  static void clearUser() {
+    _currentUser = null;
   }
 }

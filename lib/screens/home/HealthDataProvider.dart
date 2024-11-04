@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class HealthDataProvider extends ChangeNotifier {
   final int iotDataId;
   final int patientId;
-  final String firebaseUrl = 'https://healthguard-wokwi-default-rtdb.firebaseio.com/.json';
+  final String firebaseUrl = 'https://funda-aad4f-default-rtdb.firebaseio.com/.json';
   Map<String, dynamic> healthData = {};
   Map<String, dynamic> patientData = {};
   bool isLoading = true;
